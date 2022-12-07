@@ -13,6 +13,41 @@
         .container {
             text-align: center;
         }
+
+        .user-avatar {
+            width: 3.25rem;
+            height: 3.25rem;
+            border-radius: 50%;
+        }
+
+        .user-actions {
+            width: 10rem;
+            background-color: #f8f9fa;
+            border-radius: 5%;
+            display: none;
+            top: 120%;
+            animation: fadeIn ease-in .3s;
+        }
+        .user-actions::before {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            top: -25px;
+            height: 30px;
+            width: 100%;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            } to {
+                  opacity: 1;
+              }
+        }
+
+        .tony:hover .user-actions {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -34,14 +69,25 @@
                     <a class="nav-link" href="#">Contact</a>
                 </li>
             </ul>
-            <c:if test="${requestScope['username'] != null}">
-                <p>not null</p>
-            </c:if>
+
             <ul class="navbar-nav my-2 my-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="user/login.jsp">Login</a>
-                </li>
-                <li class="nav-item">
+                <c:if test="${requestScope['username'] != null}">
+                    <li class="tony nav-item d-flex align-items-center position-relative">
+                        <img src="/img/pikachu.jpeg" alt="" class="user-avatar">
+                        ${requestScope['username']}
+                        <a class="nav-link user-actions position-absolute" href="/eyeglasses">
+                            <div class="user-actions__log-out">
+                                Log Out
+                            </div>
+                        </a>
+                    </li>
+                </c:if>
+                <c:if test="${requestScope['username'] == null}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="user/login.jsp">Login</a>
+                    </li>
+                </c:if>
+                <li class="nav-item d-flex align-items-center">
                     <a class="nav-link" href="/shopping-cart">Shopping Bag</a>
                 </li>
             </ul>
@@ -51,7 +97,7 @@
 <div class="container">
     <div class="jumbotron">
         <h1>Eyeglasses products</h1>
-        <p>All OWNDAYS spectacles and sunglasses come with high index aspheric lenses that have dust-repellent coating and offer UV protection.
+        <p>All CozMoStore spectacles and sunglasses come with high index aspheric lenses that have dust-repellent coating and offer UV protection.
             Find your perfect pair of eyewear in OWNDAYS.</p>
     </div>
 </div>

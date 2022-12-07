@@ -28,7 +28,6 @@ public class ClientDAO {
         else {
             return null;
         }
-
     }
 
     private static Role getRole(int permission) throws SQLException {

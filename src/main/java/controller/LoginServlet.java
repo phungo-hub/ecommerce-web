@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-@WebServlet(name = "LoginServlet", value = "/login")
+@WebServlet(name = "LoginServlet", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
-        Account account = null;
+        Account account;
         try {
             account = ClientDAO.checkLogin(username, password);
         } catch (ClassNotFoundException e) {
@@ -38,12 +38,13 @@ public class LoginServlet extends HttpServlet {
         }
         if (account != null) {
             HttpSession session = req.getSession();
-
             session.setAttribute("account", account);
+            req.setAttribute("username", username);
             if (account.getRole() == Role.USER) {
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/eyeglasses");
                 try {
                     dispatcher.forward(req, res);
+
                 } catch (ServletException e) {
                     throw new RuntimeException(e);
                 } catch (IOException e) {
@@ -51,7 +52,7 @@ public class LoginServlet extends HttpServlet {
                 }
             }
             else if (account.getRole() == Role.ADMIN) {
-                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/admin");
+                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/adminServlet");
                 try {
                     dispatcher.forward(req, res);
                 } catch (ServletException e) {

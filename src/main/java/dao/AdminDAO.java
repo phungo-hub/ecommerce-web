@@ -29,7 +29,7 @@ public class AdminDAO implements IAdminDAO{
     }
     @Override
     public List<Eyeglasses> listEyeglasses() {
-        String query = "SELECT * FROM eyeglasses";
+        String query = "SELECT * FROM eyeglasses order by cast(id as unsigned)";
         List<Eyeglasses> eyeglassesList = new ArrayList<>();
 
         Connection conn = getConnection();
@@ -82,7 +82,7 @@ public class AdminDAO implements IAdminDAO{
                 String user_id = rs.getString("id");
                 String name = rs.getString("name");
                 double price = rs.getDouble("price");
-                int qty = rs.getInt("qty");
+                int qty = rs.getInt("quantity");
                 String url = rs.getString("url");
 
                 eyes = new Eyeglasses(user_id, name, price, qty, url);
@@ -91,6 +91,27 @@ public class AdminDAO implements IAdminDAO{
             throw new RuntimeException(e);
         }
         return eyes;
+    }
+
+    public List<Eyeglasses> searchNameOrID(String search) throws SQLException {
+        List<Eyeglasses> eyeglasses = new ArrayList<>();
+        String query = "SELECT * FROM eyeglasses WHERE id like ? '%' OR `name` like ? '%';";
+        Connection connection = getConnection();
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setString(1, search);
+        stmt.setString(2, search);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            String id = rs.getString("id");
+            String name = rs.getString("name");
+            double price = rs.getDouble("price");
+            int quantity = rs.getInt("quantity");
+            String url = rs.getString("url");
+            Eyeglasses e = new Eyeglasses(id, name, price, quantity, url);
+
+            eyeglasses.add(e);
+        }
+        return eyeglasses;
     }
 
     @Override
@@ -103,7 +124,8 @@ public class AdminDAO implements IAdminDAO{
             stmt.setString(1, e.getName());
             stmt.setDouble(2, e.getPrice());
             stmt.setInt(3, e.getQuantity());
-            stmt.setString(4, e.getId());
+            stmt.setString(4, e.getUrl());
+            stmt.setString(5, id);
             rowUpdated = stmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -113,7 +135,16 @@ public class AdminDAO implements IAdminDAO{
 
     @Override
     public boolean delete(String id) {
+        boolean rowDeleted;
         String query = "DELETE FROM eyeglasses where id = ?;";
-        return false;
+        Connection conn = getConnection();
+        try {
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, id);
+            rowDeleted = stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return rowDeleted;
     }
 }

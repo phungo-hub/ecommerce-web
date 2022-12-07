@@ -41,7 +41,7 @@
             </ul>
             <ul class="navbar-nav my-2 my-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="/login-form.jsp">Login</a>
+                    <a class="nav-link" href="/user/login.jsp">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/shopping-cart">Shopping Bag</a>
